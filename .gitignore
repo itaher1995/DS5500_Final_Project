@@ -1,0 +1,6 @@
+annotations/
+train2017/
+train2017_resized/
+val2017_resized/
+val2017/
+references/
