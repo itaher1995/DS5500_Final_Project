@@ -1,6 +1,6 @@
-annotations/
-train2017/
-train2017_resized/
-val2017_resized/
-val2017/
+256_ObjectCategories/
+256_ObjectCategories_resized/
+256_ObjectCategories_resized_subset/
 references/
+paper_images/
+_MACOSX/
