@@ -10,7 +10,7 @@ import json
 import pickle
 from model import getLayerOutput, BATCH_SIZE, CalTech256Classifier
 import os
-import hdbscan
+from sklearn.cluster import KMeans
 from sklearn.decomposition import PCA
 
 def createReducedDimensionalityDataset(dir_,intDir,model,batch_size):
@@ -23,8 +23,8 @@ def createReducedDimensionalityDataset(dir_,intDir,model,batch_size):
         getLayerOutput(dir_,model,l,batch_size).to_csv(f'{intDir}/test_layer{l}_output.csv',index=False)
         print(l)
 
-def clusteringPipeline(data,name,file_col='filename'):
-    cluster = hdbscan.HDBSCAN() # maybe change the hyperparameters?
+def clusteringPipeline(data,name,k,file_col='filename'):
+    cluster = KMeans(n_clusters=k)
     cluster.fit(data.drop(file_col,axis=1))
 
     
@@ -36,25 +36,32 @@ def clusteringPipeline(data,name,file_col='filename'):
     df = pd.DataFrame(data[file_col],columns=[file_col])
     df['x'] = coords[:,0]
     df['y'] = coords[:,1]
-    df['HDBSCAN'] = cluster.labels_
+    df['CLUSTER'] = cluster.labels_
     
     df.to_json(f'D3_inputs/{name}',orient='records')
 
-def createD3Inputs(intDir):
+def createD3Inputs(intDir,clusterCounts,indFile=False):
     if 'D3_inputs' not in os.listdir():
         os.mkdir('D3_inputs')
-    for output in os.listdir(intDir):
-        dataset = pd.read_csv(intDir.replace('/','')+'/'+output)
-        filename = '_'.join(output.split('_')[:2])+'.json'
-        clusteringPipeline(dataset,filename)
+    if not indFile:
+        files = os.listdir(intDir)
+    else:
+        files = [x for x in os.listdir(intDir) if x==indFile]
+    
+    for i in range(len(files)):
+        print(i)
+        dataset = pd.read_csv(intDir.replace('/','')+'/'+files[i])
+        filename = '_'.join(files[i].split('_')[:2])+'.json'
+        clusteringPipeline(dataset,filename,clusterCounts[i])
 
-def getClassLabels(dir_):
-    return {int(x.split('.')[0]):x.split('.')[1] for x in os.listdir(dir_) if x!='.DS_Store'}
+def getClassLabels(file):
+    classMap = pd.read_csv(file)
+    return {int(classMap.iloc[i]['class']):classMap.iloc[i]['className'] for i in range(len(classMap))}
 
 def addClassLabels(filename):
     data = json.load(open(filename,'r'))
-    classes = getClassLabels('256_ObjectCategories/')
-    data = [{'HDBSCAN':record['HDBSCAN'],
+    classes = getClassLabels('classMapping.csv')
+    data = [{'CLUSTER':record['CLUSTER'],
              'filename':record['filename'],
              'x':record['x'],
              'y':record['y'],

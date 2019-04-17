@@ -24,12 +24,264 @@ function getMinCount(d) {
 	return d.reduce((min, p) => p.count > min ? p.count : min, d[0].count);
 }
 
+// helper for sort
+  function cmp(a, b) {
+    return b[1] - a[1];
+}
+
+// small viz for nearestNeighborSearch
+function nearestNeighborPlot(d){
+
+// check if nearestNeighbor plot exists. True remove
+  if (d3.selectAll("svg#nearestNeighbor")[0].length>0){
+    d3.select("svg#nearestNeighbor").remove();
+  }
+
+  nearestClasses = [];
+  for (i=0;i<d.length;i++){
+    nearestClasses.push(d[i]['class'])
+  }
+
+var margin = {top: 20, right: 20, bottom: 120, left: 40},
+    width = 400 - margin.left - margin.right,
+    height = 400 - margin.top - margin.bottom;
+
+var xScale = d3.scale.ordinal().rangeRoundBands([0, width], .05);
+
+var yScale = d3.scale.linear().range([height, 0]);
+
+var xAxis = d3.svg.axis()
+    .scale(xScale)
+    .orient("bottom")
+
+var yAxis = d3.svg.axis()
+    .scale(yScale)
+    .orient("left")
+
+
+xScale.domain(nearestClasses);
+yScale.domain([0, d3.max(d, function(d) { return d.distProb; }) + 0.1]);
+
+var svg = d3.select("#nnPlot").append("svg")
+    .attr("id","nearestNeighbor")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", 
+          "translate(" + margin.left + "," + margin.top + ")");
+
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis)
+    .selectAll("text")
+      .style("text-anchor", "end")
+      .attr("dx", "-.8em")
+      .attr("dy", "-.55em")
+      .attr("transform", "rotate(-90)" )
+
+  svg.append("g")
+      .classed("y axis", true)
+      .call(yAxis)
+    .append("text")
+      .classed("label", true)
+      .attr("transform", "rotate(-90)")
+      .attr("y", -margin.left)
+      .attr("x",-height/2)
+      .attr("dy", ".71em")
+      .style("text-anchor", "middle")
+      .style("font-size","12px")
+      .text('Summed Distance');
+
+  svg.append("text")
+        .attr("x", (width / 2))             
+        .attr("y", -margin.top + 10)
+        .attr("text-anchor", "middle")
+        .style("font-size", "14px") 
+        .style("text-decoration", "underline")  
+        .text("Classes of Nearest Neighbors of Clicked Point")
+
+  svg.selectAll("bar")
+      .data(d)
+    .enter().append("rect")
+      .style("fill", "gray")
+      .attr("x", function(d) { return xScale(d.class); })
+      .attr("width", xScale.rangeBand())
+      .attr("y", function(d) { return yScale(d.distProb); })
+      .attr("height", function(d) { return height - yScale(d.distProb); });
+
+}
+
+// small viz for clusterDistribution
+function clusterDistributionPlot(d,bin){
+
+// check if nearestNeighbor plot exists. True remove
+  if (d3.selectAll("svg#clusterDistribution")[0].length>0){
+    d3.select("svg#clusterDistribution").remove();
+  }
+
+  clusters = [];
+  for (i=0;i<d.length;i++){
+    clusters.push(d[i]['Cluster'])
+  }
+
+var margin = {top: 20, right: 20, bottom: 120, left: 40},
+    width = 400 - margin.left - margin.right,
+    height = 400 - margin.top - margin.bottom;
+
+var xScale = d3.scale.ordinal().rangeRoundBands([0, width], 0.1);
+
+var yScale = d3.scale.linear().range([height, 0]);
+
+var xAxis = d3.svg.axis()
+    .scale(xScale)
+    .orient("bottom")
+
+var yAxis = d3.svg.axis()
+    .scale(yScale)
+    .orient("left")
+
+
+xScale.domain(clusters);
+yScale.domain([0, d3.max(d, function(d) { return d.Frequency; }) + 0.1]);
+
+var svg = d3.select("#clustPlot").append("svg")
+    .attr("id","clusterDistribution")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", 
+          "translate(" + margin.left + "," + margin.top + ")");
+
+  // svg.append("g")
+  //     .attr("class", "x axis")
+  //     .attr("transform", "translate(0," + height + ")")
+  //     .call(xAxis)
+  //   .selectAll("text")
+  //     .style("text-anchor", "end")
+  //     .attr("dx", "-.8em")
+  //     .attr("dy", "-.55em")
+  //     .attr("transform", "rotate(-90)" )
+
+
+  svg.append("g")
+      .classed("y axis", true)
+      .call(yAxis)
+    .append("text")
+      .classed("label", true)
+      .attr("transform", "rotate(-90)")
+      .attr("y", -margin.left)
+      .attr("x",-height/2)
+      .attr("dy", ".71em")
+      .style("text-anchor", "middle")
+      .style("font-size","12px")
+      .text('Frequency');
+
+  svg.append("g")
+      .classed("x axis", true)
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis)
+    .append("text")
+      .classed("label", true)
+      .attr("x", width/2)
+      .attr("y", margin.bottom - 80)
+      .style("text-anchor", "middle")
+      .style("font-size","12px")
+      .text('Clusters');
+
+  svg.append("text")
+        .attr("x", (width / 2))             
+        .attr("y", -margin.top + 10)
+        .attr("text-anchor", "middle")
+        .style("font-size", "14px") 
+        .style("text-decoration", "underline")  
+        .text("Cluster Distribution of "+bin)
+
+
+
+
+  svg.selectAll("bar")
+      .data(d)
+    .enter().append("rect")
+      .style("fill", "gray")
+      .attr("x", function(d) { return xScale(d.Cluster); })
+      .attr("width", xScale.rangeBand())
+      .attr("y", function(d) { return yScale(d.Frequency); })
+      .attr("height", function(d) { return height - yScale(d.Frequency); });
+
+}
+
+function clusterDistribution(d,bin){
+  //console.log(bin);
+  //console.log(d);
+
+  var binDist = {};
+  for (i=0;i<d.length;i++){
+    if (d[i]['class']===bin && !(d[i]['CLUSTER'] in binDist)){
+      binDist[d[i]['CLUSTER']]=1
+    }
+    else if (d[i]['class']===bin){
+      binDist[d[i]['CLUSTER']] += 1
+    }
+  }
+  binDistBar = []
+  uniCluster = Object.keys(binDist)
+  clusterCounts = Object.values(binDist)
+  for (i=0;i<uniCluster.length;i++){
+    binDistBar.push({'Cluster':uniCluster[i],'Frequency':clusterCounts[i]});
+  }
+  clusterDistributionPlot(binDistBar,bin);
+}
+
+// searches top k nearest points to a given point, pt. Calculates probable class based on that.
+function nearestNeighborSearch(d,pt,k){ 
+  var pointDist = [];
+  for (i=0;i<d.length;i++){
+    pointDist.push([d[i]["class"],1/(1+Math.sqrt(Math.pow(pt[0]-d[i]['x'],2)+Math.pow(pt[1]-d[i]['y'],2)))]);// calculate euclidean distance
+  }
+  // sort array and get top closest k results that are not point
+
+  pointDist.sort(cmp);
+  var topk = pointDist.slice(1,k+1);
+
+// getting weighted probabilities to see who is closest neighbor
+  var wProb = {};
+
+  var denominator = 0;
+
+  for (i=0;i<topk.length;i++){
+    denominator = denominator + topk[i][1]
+  }
+
+  for (i=0;i<topk.length;i++){
+    console.log(topk[i][0])
+    if (!(topk[i][0] in wProb)){
+      wProb[topk[i][0]] = topk[i][1]/denominator
+    }
+
+    else {
+      wProb[topk[i][0]] = wProb[topk[i][0]] + (topk[i][1]/denominator)
+    }
+  }
+uniClass = Object.keys(wProb)
+dist = Object.values(wProb)
+  wProbJson = [];
+  for (i=0;i<uniClass.length;i++){
+    wProbJson.push({'class':uniClass[i],'distProb':dist[i]})
+  }
+
+  nearestNeighborPlot(wProbJson)
+}
+
 // scatterplot here
 function scatterPlot(d,title){ // code adapted from: http://bl.ocks.org/peterssonjonas/4a0e7cb8d23231243e0e
-var margin = { top: 50, right: 200, bottom: 50, left: 100 },
-    outerWidth = 1050,
+
+  var dataset = d;
+
+var margin = { top: 50, right: 100, bottom: 50, left: 100 },
+    outerWidth = 750,
     outerHeight = 500,
-    width = outerWidth - margin.left - margin.right,
+    width = outerWidth - margin.left - margin.right;
     height = outerHeight - margin.top - margin.bottom;
 
 var xScale = d3.scale.linear()
@@ -58,7 +310,7 @@ var yScale = d3.scale.linear()
       .attr("class", "d3-tip")
       .offset([-10, 0])
       .html(function(d,i) {
-        return 'Class:'+d['class']+' Cluster: ' + d['HDBSCAN'];
+        return 'Class:'+d['class']+' Cluster: ' + d['CLUSTER'];
       });
 
   var zoomBeh = d3.behavior.zoom()
@@ -67,8 +319,9 @@ var yScale = d3.scale.linear()
       .scaleExtent([0, 500])
       .on("zoom", zoom);
 
-  var svg = d3.select("body")
+  var svg = d3.select("#scatPlot")
     .append("svg")
+    .attr("id","scatterplotMain")
       .attr("width", outerWidth)
       .attr("height", outerHeight)
     .append("g")
@@ -141,9 +394,11 @@ var objects = svg.append("svg")
       .attr("id",function(d,i){return d.class;})
       .attr("r", 3)
       .attr("transform", transform)
-      .style("fill", function(d) { return color(d['HDBSCAN']); })
+      .style("fill", function(d) { return color(d['CLUSTER']); })
       .on("mouseover", tip.show)
-      .on("mouseout", tip.hide);
+      .on("mouseout", tip.hide)
+      .on("click", function(d) { nearestNeighborSearch(dataset,[d.x,d.y],5)});
+
 
   var legend = svg.selectAll(".legend")
       .data(color.domain())
@@ -192,21 +447,6 @@ var objects = svg.append("svg")
   }
 };
 
-// barplot here
-function barPlot(d){ // code adapted from http://bl.ocks.org/cse4qf/95c335c73af588ce48646ac5125416c6
-
-var dataset = d;
-classes = [];
-
-for (i=0;i<dataset.length;i++){
-  if (!(classes.includes(dataset[i]['class']))){
-    classes.push(dataset[i]['class'])
-  }
-}
-
-
-
-
 function hightlight(bar) {
 
   //for class in classes
@@ -226,7 +466,21 @@ function returnToDefault() {
   d3.selectAll('circle')
     .attr("r",3)
     .style("opacity",1.0)
+};
+
+// barplot here
+function barPlot(d){ // code adapted from http://bl.ocks.org/cse4qf/95c335c73af588ce48646ac5125416c6
+
+var dataset = d;
+classes = [];
+
+for (i=0;i<dataset.length;i++){
+  if (!(classes.includes(dataset[i]['class']))){
+    classes.push(dataset[i]['class'])
+  }
 }
+
+
 
 // preprocessing
 var i;
@@ -290,7 +544,8 @@ var yscale = d3.scale.linear()
 var xAxis  = d3.svg.axis().scale(xscale).orient("bottom");
 var yAxis  = d3.svg.axis().scale(yscale).orient("left");
   
-var svg = d3.select("body").append("svg")
+var svg = d3.select("#classBarPlot").append("svg")
+            .attr("id","barplotMain")
 						.attr("width", width + margin.left + margin.right)
             .attr("height", height + margin.top + margin.bottom + selectorHeight);
   
@@ -322,7 +577,9 @@ bars.selectAll("rect")
             .on("mouseout", function(d){
               returnToDefault();
             })
-            ;
+            .on("click", function(d){
+                clusterDistribution(dataset,d.class);
+              });
 
 
   
@@ -433,138 +690,77 @@ function display () { // updates the bars on screen
       .on("mouseout", function(d){
           returnToDefault();
             })
-      ;
+      .on("click", function(d){
+                clusterDistribution(dataset,d.class);
+              });
+      
 
     rects.exit().remove();
 };
 }
 
 
+function plot(layer) { // plotting follows similar algorithm just need to change layer value per button. Setting plot function alone also allows for default plotting abilities
+
+var TITLE = 'Max Pool Layer ' + layer
+
+var url = 'http://127.0.0.1:5000/'+layer; 
+d3.json(url, function(d) { // make a call to the flask API
+
+  if (d3.selectAll("svg")[0].length===0){ // if there are no svg objects just create the graph
+      scatterPlot(d,TITLE);
+      barPlot(d);
+    }
+  else { // remove the svg object and create the graph
+      d3.select("svg#scatterplotMain").remove(); // adapted code from https://stackoverflow.com/questions/21490020/remove-line-from-line-graph-in-d3-js
+      d3.select("svg#barplotMain").remove(); // adapted code from https://stackoverflow.com/questions/21490020/remove-line-from-line-graph-in-d3-js
+      if (d3.selectAll("svg#nearestNeighbor")[0].length===1){ // if nearestNeighbor plot is active
+        d3.select("svg#nearestNeighbor").remove();
+      }
+      if (d3.selectAll("svg#clusterDistribution")[0].length===1){ // if clusterDist plot is active
+        d3.select("svg#clusterDistribution").remove();
+      }
+      scatterPlot(d,TITLE);
+      barPlot(d);
+    };
+
+
+
+});
+
+
+};
 
 
 // Gets charts by buttons
-document.getElementById("4").onclick = function plot() {
+document.getElementById("4").onclick = function dispPlot() { // javascript is stupid so you need to set a function to call a function. DiCaprio stars in Function-ception, two data science students dive into javascript
 
-var layer = '4'
-
-var TITLE = 'Max Pool Layer ' + layer
-
-var url = 'http://127.0.0.1:5000/'+layer; 
-d3.json(url, function(d) { // make a call to the flask API
-
-  if (d3.selectAll("svg")[0].length===0){ // if there are no svg objects just create the graph
-			scatterPlot(d,TITLE);
-			barPlot(d);
-		}
-  else { // remove the svg object and create the graph
-			d3.select("svg").remove(); // adapted code from https://stackoverflow.com/questions/21490020/remove-line-from-line-graph-in-d3-js
-			d3.select("svg").remove(); // adapted code from https://stackoverflow.com/questions/21490020/remove-line-from-line-graph-in-d3-js
-			scatterPlot(d,TITLE);
-			barPlot(d);
-		};
-
-
-
-});
-
+plot("4");
 
 };
 
-document.getElementById("9").onclick = function plot() {
+document.getElementById("9").onclick = function dispPlot() {
 
-var layer = '9'
-
-var TITLE = 'Max Pool Layer ' + layer
-var url = 'http://127.0.0.1:5000/'+layer; 
-d3.json(url, function(d) { // make a call to the flask API
-
-  if (d3.selectAll("svg")[0].length===0){ // if there are no svg objects just create the graph
-			scatterPlot(d,TITLE);
-			barPlot(d);
-		}
-  else { // remove the svg object and create the graph
-			d3.select("svg").remove(); // adapted code from https://stackoverflow.com/questions/21490020/remove-line-from-line-graph-in-d3-js
-			d3.select("svg").remove(); // adapted code from https://stackoverflow.com/questions/21490020/remove-line-from-line-graph-in-d3-js
-			scatterPlot(d,TITLE);
-			barPlot(d);
-		};
-
-
-
-});
-};
-
-document.getElementById("18").onclick = function plot() {
-
-var layer = '18'
-
-var TITLE = 'Max Pool Layer ' + layer
-var url = 'http://127.0.0.1:5000/'+layer; 
-d3.json(url, function(d) { // make a call to the flask API
-
-  if (d3.selectAll("svg")[0].length===0){ // if there are no svg objects just create the graph
-			scatterPlot(d,TITLE);
-			barPlot(d);
-		}
-  else { // remove the svg object and create the graph
-			d3.select("svg").remove(); // adapted code from https://stackoverflow.com/questions/21490020/remove-line-from-line-graph-in-d3-js
-			d3.select("svg").remove(); // adapted code from https://stackoverflow.com/questions/21490020/remove-line-from-line-graph-in-d3-js
-			scatterPlot(d,TITLE);
-			barPlot(d);
-		};
-
-
-
-});
-};
-
-document.getElementById("27").onclick = function plot() {
-
-var layer = '27'
-
-var TITLE = 'Max Pool Layer ' + layer
-var url = 'http://127.0.0.1:5000/'+layer; 
-d3.json(url, function(d) { // make a call to the flask API
-
-  if (d3.selectAll("svg")[0].length===0){ // if there are no svg objects just create the graph
-			scatterPlot(d,TITLE);
-			barPlot(d);
-		}
-  else { // remove the svg object and create the graph
-			d3.select("svg").remove(); // adapted code from https://stackoverflow.com/questions/21490020/remove-line-from-line-graph-in-d3-js
-			d3.select("svg").remove(); // adapted code from https://stackoverflow.com/questions/21490020/remove-line-from-line-graph-in-d3-js
-			scatterPlot(d,TITLE);
-			barPlot(d);
-		};
-
-
-
-});
-};
-
-document.getElementById("36").onclick = function plot() {
-
-var layer = '36'
-
-var TITLE = 'Max Pool Layer ' + layer
-var url = 'http://127.0.0.1:5000/'+layer; 
-d3.json(url, function(d) { // make a call to the flask API
-
-  if (d3.selectAll("svg")[0].length===0){ // if there are no svg objects just create the graph
-			scatterPlot(d,TITLE);
-			barPlot(d);
-		}
-  else { // remove the svg object and create the graph
-			d3.select("svg").remove(); // adapted code from https://stackoverflow.com/questions/21490020/remove-line-from-line-graph-in-d3-js
-			d3.select("svg").remove(); // adapted code from https://stackoverflow.com/questions/21490020/remove-line-from-line-graph-in-d3-js
-			scatterPlot(d,TITLE);
-			barPlot(d);
-		};
-
-
-
-});
-
+plot("9");
 
 };
 
+document.getElementById("18").onclick = function dispPlot() {
+
+plot("18");
+
+};
+
+document.getElementById("27").onclick = function dispPlot() {
+
+plot("27");
+
+};
+
+document.getElementById("36").onclick = function dispPlot() {
+
+plot("36");
+
+};
+
+plot("4");

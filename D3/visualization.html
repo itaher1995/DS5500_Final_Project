@@ -1,0 +1,179 @@
+<html>
+
+<head>
+<meta charset="utf-8"/>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<center><h4>EXPLORATORY ANALYSIS OF VGG19</h4></center>
+</head>
+<style type="text/css">
+
+
+rect {
+  fill: transparent;
+  shape-rendering: crispEdges;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: rgba(0, 0, 0, 0.1);
+  shape-rendering: crispEdges;
+}
+
+.axisLine {
+  fill: none;
+  shape-rendering: crispEdges;
+  stroke: rgba(0, 0, 0, 0.5);
+  stroke-width: 2px;
+}
+
+.dot {
+  fill-opacity: .5;
+}
+
+.d3-tip {
+  line-height: 1;
+  font-weight: bold;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  border-radius: 2px;
+}
+
+/* Creates a small triangle extender for the tooltip */
+.d3-tip:after {
+  box-sizing: border-box;
+  display: inline;
+  font-size: 10px;
+  width: 100%;
+  line-height: 1;
+  color: rgba(0, 0, 0, 0.8);
+  content: "\25BC";
+  position: absolute;
+  text-align: center;
+}
+
+/* Style northward tooltips differently */
+.d3-tip.n:after {
+  margin: -1px 0 0 0;
+  top: 100%;
+  left: 0;
+}
+
+/* From Bar Chart */
+
+#scatBox {
+  float: left;
+
+}
+
+#classBarBox {
+  float: right;
+
+}
+
+svg {
+  font: 10px sans-serif;
+}
+
+
+.bar {
+  fill: lightgray;
+  clip-path: url(#clip);
+}
+
+.bar:hover {
+  fill:black;
+}
+
+  
+.subBar { 
+  fill: gray;
+  opacity: 0.5;
+}
+
+/*.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}*/
+
+.brush .extent {
+  stroke: #fff;
+  fill: steelblue;
+  fill-opacity: .25;
+  shape-rendering: crispEdges;
+}
+
+  rect.mover {
+            stroke: red;
+            stroke-opacity: .1;
+            fill: lightSteelBlue;
+            fill-opacity: .5;
+        }
+
+</style>
+
+</head>
+
+<body>
+
+<center>
+<p>
+ <button id="4">
+ 	Max Pool 4
+ </button>
+
+ <button id="9">
+ 	Max Pool 9
+ </button>
+
+ <button id="18">
+ 	Max Pool 18
+ </button>
+
+ <button id="27">
+ 	Max Pool 27
+ </button>
+
+ <button id="36">
+ 	Max Pool 36
+ </button>
+</label> 
+
+</p>
+</center>
+<br>
+<br>
+<br>
+<center>
+<div class="card" id="scatBox">
+  <div class="card-body" id="scatPlot">
+
+  </div>
+  <div class="card-body" id="nnPlot">
+
+  </div>
+
+</div>
+<div class="card" id="classBarBox">
+  <div class="card-body" id="classBarPlot">
+
+  </div>
+  <div class="card-body" id="clustPlot">
+
+  </div>
+</div>
+</center>
+
+
+
+<script src='https://d3js.org/d3.v3.min.js'></script>
+<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+
+<script src="viz.js"></script>
+
+
+</body>
+</html>

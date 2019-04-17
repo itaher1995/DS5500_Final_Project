@@ -1,149 +1,172 @@
-<html>
-
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<meta charset="utf-8"/>
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-<center>HOW DOES VGG LEARN?</center>
-</head>
-<style type="text/css">
+  <title>How Does VGG Learn?</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+  <style>
+  body {
+    position: relative;
+  }
+  ul.nav-pills {
+    top: 20px;
+    position: fixed;
+  }
+  div.col-sm-9 div {
+    height: 250px;
+    font-size: 28px;
+  }
 
-
-rect {
-  fill: transparent;
-  shape-rendering: crispEdges;
-}
-
-.axis path,
-.axis line {
-  fill: none;
-  stroke: rgba(0, 0, 0, 0.1);
-  shape-rendering: crispEdges;
-}
-
-.axisLine {
-  fill: none;
-  shape-rendering: crispEdges;
-  stroke: rgba(0, 0, 0, 0.5);
-  stroke-width: 2px;
-}
-
-.dot {
-  fill-opacity: .5;
-}
-
-.d3-tip {
-  line-height: 1;
-  font-weight: bold;
-  padding: 12px;
-  background: rgba(0, 0, 0, 0.8);
-  color: #fff;
-  border-radius: 2px;
-}
-
-/* Creates a small triangle extender for the tooltip */
-.d3-tip:after {
-  box-sizing: border-box;
-  display: inline;
-  font-size: 10px;
-  width: 100%;
-  line-height: 1;
-  color: rgba(0, 0, 0, 0.8);
-  content: "\25BC";
-  position: absolute;
-  text-align: center;
-}
-
-/* Style northward tooltips differently */
-.d3-tip.n:after {
-  margin: -1px 0 0 0;
-  top: 100%;
-  left: 0;
-}
-
-/* From Bar Chart */
-
-
-svg {
-  font: 10px sans-serif;
-}
-
-
-.bar {
-  fill: lightgray;
-  clip-path: url(#clip);
-}
-
-.bar:hover {
-  fill:black;
-}
-
+  p {
+  	font-size: 14px;
+  }
+  #section1 {border-color: black;}
+  #section2 {border-color: black;}
+  #section3 {border-color: black;}
+  #section41 {border-color: black;}
+  #section42 {border-color: black;}
   
-.subBar { 
-  fill: gray;
-  opacity: 0.5;
-}
-
-/*.axis path,
-.axis line {
-  fill: none;
-  stroke: #000;
-  shape-rendering: crispEdges;
-}*/
-
-.brush .extent {
-  stroke: #fff;
-  fill: steelblue;
-  fill-opacity: .25;
-  shape-rendering: crispEdges;
-}
-
-  rect.mover {
-            stroke: red;
-            stroke-opacity: .1;
-            fill: lightSteelBlue;
-            fill-opacity: .5;
-        }
-
-</style>
-
+  @media screen and (max-width: 810px) {
+    #section1, #section2, #section3, #section41, #section42  {
+      margin-left: 150px;
+    }
+  }
+  </style>
 </head>
-
-<body>
+<body data-spy="scroll" data-target="#myScrollspy" data-offset="20">
 <center>
-<p>
- <button id="4">
- 	Max Pool 4
- </button>
-
- <button id="9">
- 	Max Pool 9
- </button>
-
- <button id="18">
- 	Max Pool 18
- </button>
-
- <button id="27">
- 	Max Pool 27
- </button>
-
- <button id="36">
- 	Max Pool 36
- </button>
-</label> 
-
-</p>
+<h1>How Does VGG Learn?</h1>
+<h2>Instructions to Using The Visualization</h2>
 </center>
-<br>
-<br>
-<br>
+
+<div class="container">
+  <div class="row">
+    <nav class="col-sm-3" id="myScrollspy">
+      <ul class="nav nav-pills nav-stacked">
+        <li class="active"><a href="#section1">Introduction</a></li>
+        <li><a href="#section2">Toggling Functionality</a></li>
+        <li><a href="#section3">Exploring Clusters</a></li>
+        <li><a href="#section4">Filtering with Bar Plot</a></li>
+
+      </ul>
+    </nav>
+    <div class="col-sm-9">
+      <div id="section1">    
+        <h3>Introduction</h3>
+        <p>Welcome to "How Does VGG Learn?", an interactive visualization designed to whitebox a blackbox using effective and expressive visualizations. The user will able to explore several visualizations that will hightlight characteristics that VGG learns up until various stopping points. You will read some quick instructions on how to use this platform. At the bottom of this page you can click "Begin Visualization" to explore VGG's output from intermediate max pooling layers.</p>
+      </div>
+
+      <div id="section2">
+      <h3>Toggle Functionality</h3>
+
+      <p>The user has the ability to toggle between different max pooling layers to see the output up until that layer.</p>
+
+      <center>
+      <img src='gifs/toggleLayer.gif'>
+      </center>
+
+      </div>
+
+      <div id="section3"> 
+        <h3>Exploring Intermediate Layer Outputs Using Clustering</h3>
+        <p>The first primary visualization is the scatter plot, which plots 2993 images in two dimensions after various max pooling layers.</p>
+
+        <p>These images are clustered using K-Means. The user can zoom and pan the visualization, which will expose different parts of the visualization.</p>
+
+        <center>
+        <img src='gifs/zoomPan.gif'>
+    	</center>
+
+        <p>The user can hover over each point to get the cluster label and the ground truth class label. They can also click on a point and get the closest classes to that point. </p>
+
+        <center>
+        <img src='gifs/nearestNeighbor.gif'>
+        </center>
+
+      </div> 
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>       
+      <div id="section4">         
+        <h3>Explore Class Distribution, Filter Points Corresponding to a Class and Show Clustering Distribution</h3>
+        <p>The second primary visualization is a bar plot. This bar plot plots the distribution of all 256 classes in the dataset that is currently visualized.</p>
+
+        <p>The user can scroll using the minibar on the bottom to see the frequency of each class.</p>
+        
+        <center>
+		<img src='gifs/barScroll.gif'>
+	    </center>
+    	
+    	<p>Hovering on each main bar allows the user to see where the points corresponding to that class are on the scatterplot.</p>
+
+    	<center>
+    	<img src='gifs/barHover.gif'>
+    	</center>
+
+    	<p>The user can also click on the actual bars to see the distribution of images across each cluster.</p>
+
+    	<center>
+    	<img src='gifs/barClick.gif'>
+      	</center>
+      </div>   
+         <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br> 
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+   
+      </div>
+    </div>
+  </div>
+</div>
 
 
 
-<script src='https://d3js.org/d3.v3.min.js'></script>
-<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
-
-<script src="viz.js"></script>
+	<center>
+	<form action="visualization.html">
+    <input type="submit" value="Begin Visualization" />
+	</form>
+	</center>
 
 
 </body>
