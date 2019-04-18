@@ -65,7 +65,7 @@
       <p>The user has the ability to toggle between different max pooling layers to see the output up until that layer.</p>
 
       <center>
-      <img src='gifs/toggleLayer.gif'>
+      <img src="{{(url_for('static',filename='images/toggleLayer.gif'))}}">
       </center>
 
       </div>
@@ -77,13 +77,13 @@
         <p>These images are clustered using K-Means. The user can zoom and pan the visualization, which will expose different parts of the visualization.</p>
 
         <center>
-        <img src='gifs/zoomPan.gif'>
+        <img src="{{(url_for('static',filename='images/zoomPan.gif'))}}">
     	</center>
 
         <p>The user can hover over each point to get the cluster label and the ground truth class label. They can also click on a point and get the closest classes to that point. </p>
 
         <center>
-        <img src='gifs/nearestNeighbor.gif'>
+        <img src="{{(url_for('static',filename='images/nearestNeighbor.gif'))}}">
         </center>
 
       </div> 
@@ -110,19 +110,19 @@
         <p>The user can scroll using the minibar on the bottom to see the frequency of each class.</p>
         
         <center>
-		<img src='gifs/barScroll.gif'>
+		<img src="{{(url_for('static',filename='images/barScroll.gif'))}}">
 	    </center>
     	
     	<p>Hovering on each main bar allows the user to see where the points corresponding to that class are on the scatterplot.</p>
 
     	<center>
-    	<img src='gifs/barHover.gif'>
+    	<img src="{{(url_for('static',filename='images/barHover.gif'))}}">
     	</center>
 
     	<p>The user can also click on the actual bars to see the distribution of images across each cluster.</p>
 
     	<center>
-    	<img src='gifs/barClick.gif'>
+    	<img src="{{(url_for('static',filename='images/barClick.gif'))}}">
       	</center>
       </div>   
          <br>
@@ -163,7 +163,7 @@
 
 
 	<center>
-	<form action="visualization.html">
+	<form action="{{url_for('visualization')}}">
     <input type="submit" value="Begin Visualization" />
 	</form>
 	</center>

@@ -6,7 +6,7 @@ Created on Wed Mar 27 20:13:50 2019
 """
 
 
-from flask import Flask
+from flask import Flask, render_template
 from flask_restful import Resource, Api
 from flask_cors import CORS
 from helper import addClassLabels
@@ -20,7 +20,16 @@ class getData(Resource):
 
         return addClassLabels(f'D3_inputs/test_layer{layer}.json')
 
-api.add_resource(getData,'/<string:layer>')
+api.add_resource(getData,'/data/<string:layer>')
+
+@app.route('/')
+def home():
+    return render_template("index.html")
+
+@app.route('/visualization')
+
+def visualization():
+    return render_template("visualization.html")
         
 if __name__=='__main__':
     app.run(debug=True)

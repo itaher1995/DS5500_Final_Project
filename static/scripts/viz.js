@@ -702,7 +702,9 @@ function display () { // updates the bars on screen
 
 function plot(layer) { // plotting follows similar algorithm just need to change layer value per button. Setting plot function alone also allows for default plotting abilities
 
-var TITLE = 'Max Pool Layer ' + layer
+layerNum = layer.replace("data/","");
+
+var TITLE = 'Max Pool Layer ' + layerNum
 
 var url = 'http://127.0.0.1:5000/'+layer; 
 d3.json(url, function(d) { // make a call to the flask API
@@ -735,32 +737,32 @@ d3.json(url, function(d) { // make a call to the flask API
 // Gets charts by buttons
 document.getElementById("4").onclick = function dispPlot() { // javascript is stupid so you need to set a function to call a function. DiCaprio stars in Function-ception, two data science students dive into javascript
 
-plot("4");
+plot("data/4");
 
 };
 
 document.getElementById("9").onclick = function dispPlot() {
 
-plot("9");
+plot("data/9");
 
 };
 
 document.getElementById("18").onclick = function dispPlot() {
 
-plot("18");
+plot("data/18");
 
 };
 
 document.getElementById("27").onclick = function dispPlot() {
 
-plot("27");
+plot("data/27");
 
 };
 
 document.getElementById("36").onclick = function dispPlot() {
 
-plot("36");
+plot("data/36");
 
 };
 
-plot("4");
+plot("data/4");
