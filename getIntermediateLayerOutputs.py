@@ -5,9 +5,7 @@ Created on Tue Apr  2 22:56:40 2019
 @author: ibiyt
 """
 
-from model import CalTech256Classifier, BATCH_SIZE, getLayerOutput
-import pandas as pd
-import numpy as np
+from model import BATCH_SIZE, get_layer_output, CalTech256Classifier
 import os
 import pickle
 
@@ -18,6 +16,8 @@ if 'intermediate_layer_outputs' not in os.listdir():
 
 # get intermediate training layers
 for l in [4,9,18,27,36]:
-    #getLayerOutput('train',clf.model,l,BATCH_SIZE).to_csv(f'intermediate_layer_outputs/train_layer{l}_output.csv',index=False)
-    getLayerOutput('test',clf.model,l,BATCH_SIZE).to_csv(f'intermediate_layer_outputs/test_layer{l}_output.csv',index=False)
+   
+    get_layer_output('test', clf.model, l, BATCH_SIZE)\
+    .to_csv(f'intermediate_layer_outputs/test_layer{l}_output.csv',
+            index=False)
     print(l)

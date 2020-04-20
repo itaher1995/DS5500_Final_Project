@@ -11,7 +11,6 @@ from torchvision import datasets, transforms
 import torch
 from torchvision.models import vgg19
 from torch import nn
-import torch.nn.functional as F
 from torch.autograd import Variable
 import numpy as np
 import os
@@ -298,13 +297,33 @@ class CalTech256Classifier:
                 #logPred.extend(ps.max(1)[1].cpu().numpy().tolist())
         return {'Top-1 Accuracy':top1/size,
                 'Top-5 Accuracy':top5/size}
-def getLayerOutput(dir_,model,layer,batch_size,device=torch.device("cuda:0" if torch.cuda.is_available() else "cpu")):
-    '''
-    Gets output of model from certain layers
-    If we're looking at the training directory, it will compute the number of 
-    components. Else, it needs to take a parameter pcaState, that will load the
-    define model by filename.
-    '''
+
+
+def get_layer_output(dir_,
+                     model,
+                     layer,
+                     batch_size,
+                     device = torch.device("cuda:0"\
+                                           if torch.cuda.is_available()\
+                                           else "cpu")):
+    """
+    Gets the output of a layer and transforms it to be flat for further 
+    transformations. It eventually gets compressed to 2D to be plotted in
+    D3
+    
+        :param dir_: The directory where data is stored
+        :type dir_: str
+        :param model: VGG
+        :type model: PyTorch CNN Model
+        :param layer: The layer to extract outputs from
+        :type layer: int
+        :param batch_size: The size of the batch that the machine can handle
+        :type batch_size: int
+        :param device: Whether to use GPU or CPU
+        
+        :returns: A Datarame of reduced dimensions
+        :rtype: DataFrame
+    """
     
     loader = load_data(dir_,batch_size,False)
     
@@ -324,10 +343,16 @@ def getLayerOutput(dir_,model,layer,batch_size,device=torch.device("cuda:0" if t
     
 
     # dim reduction
-    pca = PCA(n_components=outList.shape[1])
+    
+    if outList.shape[1] > 1000:
+        nc = 1000
+    else:
+        nc = outList.shape[1]
+        
+    pca = PCA(n_components = nc)
     pca.fit(outList)
     
-    reducedComponents = np.argmax(np.cumsum(pca.explained_variance_ratio_)>=0.9) # get number of dimensions that account of 0.9 variance
+    reducedComponents = np.argmax(np.cumsum(pca.explained_variance_ratio_)>=0.85) # get number of dimensions that account of 0.9 variance
 
     pca = PCA(n_components=reducedComponents)
     pca.fit(outList)
@@ -342,9 +367,10 @@ def getLayerOutput(dir_,model,layer,batch_size,device=torch.device("cuda:0" if t
     
 
 if __name__ == '__main__':
-    clf = CalTech256Classifier(vgg19(pretrained='imagenet'),BATCH_SIZE,EPOCHS)
+    clf = CalTech256Classifier(vgg19(pretrained='imagenet'),BATCH_SIZE,EPOCHS,10)
     clf.freezeLayers()
     clf.addSoftmax()
+    
     clf.train(verbose=True,log=True)
     with open('classifier.pkl','wb') as f:
         pickle.dump(clf,f)
