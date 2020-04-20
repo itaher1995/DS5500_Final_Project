@@ -20,7 +20,11 @@ class getData(Resource):
 
         return add_class_labels(f'D3_inputs/test_layer{layer}.json')
 
+<<<<<<< HEAD
 api.add_resource(getData,'/<string:layer>')
+=======
+api.add_resource(getData,'/data/<string:layer>')
+>>>>>>> 2e3e7231779f27974a10f89a8f2d37265ac2868d
 
 @app.route('/')
 def home():
@@ -30,10 +34,13 @@ def home():
 
 def visualization():
     return render_template("visualization.html")
+<<<<<<< HEAD
         
 if __name__=='__main__':
     app.run(debug=True)
 
+=======
+>>>>>>> 2e3e7231779f27974a10f89a8f2d37265ac2868d
         
 if __name__=='__main__':
     app.run(debug=True)
