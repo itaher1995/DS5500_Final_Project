@@ -105,6 +105,15 @@ def get_class_labels(file):
     
     return label_mapping
 
+def make_class_animals(dir_):
+    
+    classes = os.listdir(dir_)
+    classes_df = pd.Series({c: classes.index(c) for c in classes})\
+                .reset_index().rename(columns = {"index":"className", 0: "className"})
+    
+    classes_df.to_csv("classMapping.csv", index = False)
+    
+
 def add_class_labels(filename):
     """Takes the filename and adds a class label to it"""
     
